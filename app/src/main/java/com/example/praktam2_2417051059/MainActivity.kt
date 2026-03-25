@@ -1,7 +1,9 @@
 package com.example.praktam2_2417051059
 
 import Model.Pakaian
+import Model.Pemesanan
 import Model.SourcePakaian
+import Model.SourcePemesanan
 import android.R.attr.icon
 import android.R.attr.onClick
 import android.R.id.icon
@@ -12,6 +14,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,13 +28,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
@@ -49,13 +57,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,9 +78,275 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PrakTAM2_2417051059Theme {
-                DaftarBajuScreen()
+                DashboardScreen()
             }
         }
+    }
+}
+
+@Composable
+fun DashboardScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF1F1F1))
+            .padding(vertical = 10.dp)
+            .padding(horizontal = 20.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(vertical = 20.dp)
+        ) {
+            Text(
+                text = "Selamat datang,"
+            )
+            Text(
+                text = "Zahra Kebaya",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFCFAA88)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+
+        ) {
+            Card(
+                modifier = Modifier
+                    .weight(1f),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFE9EDCA))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .padding(horizontal = 10.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "85",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color(0xFF929C71)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Pesanan\nAktif",
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 15.sp
+                    )
+                }
+            }
+            Card(
+                modifier = Modifier
+                    .weight(1f),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFEDE1D5))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .padding(horizontal = 10.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "85",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color(0xFFB5875F)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Pesanan\nSelesai",
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 15.sp
+                    )
+                }
+            }
+            Card(
+                modifier = Modifier
+                    .weight(1f),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F1F1)),
+                border = BorderStroke(1.dp, Color(0xFF000000))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .padding(horizontal = 10.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "85"
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Total\nPelanggan",
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 15.sp
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Column() {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Deadline sebentar lagi")
+
+                IconButton(
+                    onClick ={}
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = "deadline",
+                        tint = Color(0xFFB5875F)
+                    )
+                }
+            }
+
+            Row() {
+                DeadlineBaju()
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Column() {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Pesanan Terbaru")
+
+                IconButton(
+                    onClick ={}
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = "deadline",
+                        tint = Color(0xFFB5875F)
+                    )
+                }
+            }
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(SourcePemesanan.daftarPemesanan){ pemesanan ->
+                    PesananBaju(pemesanan = pemesanan)
+                }
+            }
+
+        }
+
+    }
+}
+
+@Composable
+fun DeadlineBaju(){
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F1F1)),
+        border = BorderStroke(width = 1.dp, Color.Black)
+
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 25.dp)
+                .padding(vertical = 10.dp)
+                .width(170.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Text(
+                text = "2 hari lagi",
+                color = Color(0xFFB5875F),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .background(color = Color(0xFFEDE1D5))
+                    .padding(horizontal = 7.dp)
+
+            )
+            Text(
+                text = "Dress Polos",
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "Rara"
+            )
+        }
+
+    }
+}
+@Composable
+fun PesananBaju(pemesanan: Pemesanan) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFE9EDCA)),
+
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 25.dp)
+                .padding(vertical = 10.dp)
+                .width(170.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Text(
+                text = "${pemesanan.nama}",
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "${pemesanan.tanggal}",
+                fontSize = 14.sp
+           )
+
+            Row(
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .background(Color(0xFFF1F1F1))
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .padding(vertical = 5.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${pemesanan.jenisPakaian}",
+                    fontSize = 14.sp
+                )
+
+                Button(
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(25.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFE9EDCA)
+                    )
+                ) {
+                    Text(
+                        text = "Detail",
+                        fontSize = 10.sp,
+                        color = Color.Black
+                    )
+                }
+            }
+        }
+
     }
 }
 
@@ -93,16 +370,15 @@ fun DaftarBajuScreen() {
         Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
         Spacer(modifier = Modifier.height(25.dp))
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .background(Color(0xFFF1F1F1))
-                .padding(horizontal = 20.dp)
+                .background(Color(0xFFF1F1F1)),
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            SourcePakaian.jenisPakaian.forEach { pakaian ->
+            items(SourcePakaian.jenisPakaian) { pakaian ->
                 DetailScreen(pakaian = pakaian)
-                Spacer(modifier = Modifier.height(35.dp))
             }
         }
     }
@@ -168,7 +444,8 @@ fun DetailScreen(pakaian: Pakaian){
             modifier = Modifier
                 .width(600.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            border = BorderStroke(1.dp, Color(0xFFE8E8E8))
+            border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
+            elevation = CardDefaults.cardElevation(3.dp)
         ) {
             Row (
                 modifier = Modifier.padding(16.dp)
@@ -261,8 +538,16 @@ fun DetailScreen(pakaian: Pakaian){
 
 @Preview(showBackground = true)
 @Composable
+fun DashboardPreview() {
+    PrakTAM2_2417051059Theme {
+        DashboardScreen()
+    }
+}
+@Preview(showBackground = true)
+@Composable
 fun DaftarBajuPreview() {
     PrakTAM2_2417051059Theme {
         DaftarBajuScreen()
     }
 }
+
