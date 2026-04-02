@@ -49,6 +49,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -89,7 +90,7 @@ fun DashboardScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF1F1F1))
+            .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 10.dp)
             .padding(horizontal = 20.dp)
     ) {
@@ -102,9 +103,8 @@ fun DashboardScreen() {
             )
             Text(
                 text = "Zahra Kebaya",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFCFAA88)
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
 
@@ -117,7 +117,7 @@ fun DashboardScreen() {
             Card(
                 modifier = Modifier
                     .weight(1f),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFE9EDCA))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
                 Column(
                     modifier = Modifier
@@ -128,23 +128,21 @@ fun DashboardScreen() {
                 ) {
                     Text(
                         text = "85",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color(0xFF929C71)
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = "Pesanan\nAktif",
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center,
-                        lineHeight = 15.sp
                     )
                 }
             }
             Card(
                 modifier = Modifier
                     .weight(1f),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFEDE1D5))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Column(
                     modifier = Modifier
@@ -155,16 +153,14 @@ fun DashboardScreen() {
                 ) {
                     Text(
                         text = "85",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color(0xFFB5875F)
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = "Pesanan\nSelesai",
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center,
-                        lineHeight = 15.sp
                     )
                 }
             }
@@ -172,7 +168,7 @@ fun DashboardScreen() {
                 modifier = Modifier
                     .weight(1f),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F1F1)),
-                border = BorderStroke(1.dp, Color(0xFF000000))
+                border = BorderStroke(1.dp, Color.Black)
             ) {
                 Column(
                     modifier = Modifier
@@ -182,14 +178,14 @@ fun DashboardScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "85"
+                        text = "85",
+                        style = MaterialTheme.typography.titleLarge
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = "Total\nPelanggan",
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center,
-                        lineHeight = 15.sp
                     )
                 }
             }
@@ -210,7 +206,7 @@ fun DashboardScreen() {
                     Icon(
                         imageVector = Icons.Default.ArrowForward,
                         contentDescription = "deadline",
-                        tint = Color(0xFFB5875F)
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -235,7 +231,7 @@ fun DashboardScreen() {
                     Icon(
                         imageVector = Icons.Default.ArrowForward,
                         contentDescription = "deadline",
-                        tint = Color(0xFFB5875F)
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -256,31 +252,31 @@ fun DashboardScreen() {
 @Composable
 fun DeadlineBaju(){
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F1F1)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         border = BorderStroke(width = 1.dp, Color.Black)
 
     ) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 25.dp)
-                .padding(vertical = 10.dp)
+                .padding(vertical = 15.dp)
                 .width(170.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp)
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
                 text = "2 hari lagi",
-                color = Color(0xFFB5875F),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .background(color = Color(0xFFEDE1D5))
-                    .padding(horizontal = 7.dp)
+                    .clip(shape = RoundedCornerShape(5.dp))
+                    .background(color = MaterialTheme.colorScheme.primary)
+                    .padding(horizontal = 10.dp)
+                    .padding(vertical = 5.dp)
 
             )
             Text(
                 text = "Dress Polos",
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Text(
@@ -293,19 +289,20 @@ fun DeadlineBaju(){
 @Composable
 fun PesananBaju(pemesanan: Pemesanan) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE9EDCA)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
 
     ) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 25.dp)
-                .padding(vertical = 10.dp)
+                .padding(vertical = 15.dp)
                 .width(170.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp)
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
                 text = "${pemesanan.nama}",
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = "${pemesanan.tanggal}",
@@ -314,8 +311,8 @@ fun PesananBaju(pemesanan: Pemesanan) {
 
             Row(
                 modifier = Modifier
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .background(Color(0xFFF1F1F1))
+                    .clip(shape = RoundedCornerShape(5.dp))
+                    .background(MaterialTheme.colorScheme.background)
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
                     .padding(vertical = 5.dp),
@@ -324,7 +321,7 @@ fun PesananBaju(pemesanan: Pemesanan) {
             ) {
                 Text(
                     text = "${pemesanan.jenisPakaian}",
-                    fontSize = 14.sp
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Button(
@@ -332,10 +329,10 @@ fun PesananBaju(pemesanan: Pemesanan) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(25.dp),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(5.dp),
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFE9EDCA)
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
                     Text(
@@ -355,7 +352,7 @@ fun DaftarBajuScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF1F1F1))
+            .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 10.dp)
     ) {
         Box(
@@ -397,7 +394,7 @@ fun HeaderDaftarBaju(){
         Icon(
             imageVector = Icons.Default.ArrowBack,
             contentDescription = "back",
-            tint = Color(0xFFD4A373),
+            tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .size(23.dp)
         )
@@ -407,9 +404,8 @@ fun HeaderDaftarBaju(){
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Katalog & Layanan",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFD4A373)
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
                 text = "Pilih dasar jahitan pesanan",
@@ -428,7 +424,7 @@ fun HeaderDaftarBaju(){
                 Icon(
                     imageVector = Icons.Outlined.FavoriteBorder,
                     contentDescription = "Favorite",
-                    tint = Color(0xFFD4A373),
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(25.dp)
                 )
             }
@@ -482,8 +478,7 @@ fun DetailScreen(pakaian: Pakaian){
                     Column() {
                         Text(
                             text = "${pakaian.nama}",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
+                            style = MaterialTheme.typography.bodyMedium
                         )
                         Text(text = "${pakaian.harga}")
                     }
@@ -499,13 +494,13 @@ fun DetailScreen(pakaian: Pakaian){
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(0.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFEDE0D4)
+                                containerColor = MaterialTheme.colorScheme.primary
                             )
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Edit",
-                                tint = Color(0xFFD4A373),
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -516,14 +511,14 @@ fun DetailScreen(pakaian: Pakaian){
                             onClick = {},
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFEDE0D4)
+                                containerColor = MaterialTheme.colorScheme.primary
                             ),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
                                 text = "+ Tambah",
-                                fontSize = 12.sp,
-                                color = Color(0xFFD4A373)
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
 
                         }
