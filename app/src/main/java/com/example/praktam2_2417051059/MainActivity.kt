@@ -52,11 +52,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
@@ -71,6 +73,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.ComposableTarget
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
+
+
 import com.example.praktam2_2417051059.ui.theme.PrakTAM2_2417051059Theme
 
 class MainActivity : ComponentActivity() {
@@ -79,7 +98,33 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PrakTAM2_2417051059Theme {
-                DashboardScreen()
+                val navController = rememberNavController()
+                AppNavigation(navController)
+            }
+        }
+    }
+}
+@Composable
+//@ComposableTarget
+fun AppNavigation (navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "home"
+    ){
+        composable("home"){
+            DaftarBajuScreen(navController)
+        }
+
+        composable("detail/{nama}") { backStackEntry ->
+            val nama =
+                backStackEntry.arguments?.getString("nama")
+
+            val pakaian = SourcePakaian.jenisPakaian.find {
+                it.nama == nama
+            }
+
+            if (pakaian != null) {
+                DetailScreen(pakaian = pakaian, navController = navController, isFullScreen = true)
             }
         }
     }
@@ -167,7 +212,7 @@ fun DashboardScreen() {
             Card(
                 modifier = Modifier
                     .weight(1f),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF1F1F1)),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
                 border = BorderStroke(1.dp, Color.Black)
             ) {
                 Column(
@@ -348,7 +393,7 @@ fun PesananBaju(pemesanan: Pemesanan) {
 }
 
 @Composable
-fun DaftarBajuScreen() {
+fun DaftarBajuScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -375,7 +420,7 @@ fun DaftarBajuScreen() {
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(SourcePakaian.jenisPakaian) { pakaian ->
-                DetailScreen(pakaian = pakaian)
+                ItemBaju(pakaian = pakaian, navController = navController)
             }
         }
     }
@@ -433,12 +478,20 @@ fun HeaderDaftarBaju(){
 }
 
 @Composable
-fun DetailScreen(pakaian: Pakaian){
+fun ItemBaju(pakaian: Pakaian, navController: NavController) {
     var isFavorite by remember { mutableStateOf(false) }
-    Column() {
+    var isLoading by remember { mutableStateOf(false) }
+    val caroutineScope = rememberCoroutineScope  ()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    Box(){
         Card(
             modifier = Modifier
-                .width(600.dp),
+                .fillMaxWidth()
+                .clickable {
+                    // Navigasi saat card diklik
+                    navController.navigate("detail/${pakaian.nama}")
+                },
             colors = CardDefaults.cardColors(containerColor = Color.White),
             border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
             elevation = CardDefaults.cardElevation(3.dp)
@@ -471,7 +524,6 @@ fun DetailScreen(pakaian: Pakaian){
                 Spacer(Modifier.width(20.dp))
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
                         .height(110.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -507,28 +559,192 @@ fun DetailScreen(pakaian: Pakaian){
 
                         Spacer(modifier = Modifier.width(15.dp))
 
+                        // Tombol Tambah
                         Button(
-                            onClick = {},
+                            onClick = {
+                                caroutineScope.launch {
+                                    isLoading = true
+                                    delay(2000)
+                                    snackbarHostState.showSnackbar("Pesanan ${pakaian.nama} berhasil ditambahkan!")
+                                    isLoading = false
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !isLoading,
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary
                             ),
-                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(
-                                text = "+ Tambah",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
+                            if (isLoading){
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    strokeWidth = 2.dp
+
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Menambahkan",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 11.sp
+                                )
+                            } else {
+                                Text(
+                                    text = "+ Tambah",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
 
                         }
                     }
                 }
             }
+        }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Composable
+fun DetailScreen(pakaian: Pakaian, navController: NavController, isFullScreen: Boolean = false){
+    var isFavorite by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
+    val caroutineScope = rememberCoroutineScope  ()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    Box(modifier = Modifier.fillMaxWidth()){
+        Column() {
+            Card(
+                modifier = Modifier
+                    .width(600.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = BorderStroke(1.dp, Color(0xFFE8E8E8)),
+                elevation = CardDefaults.cardElevation(3.dp)
+            ) {
+                Row (
+                    modifier = Modifier.padding(16.dp)
+                ){
+                    Box() {
+                        Image(
+                            painter = painterResource(id = pakaian.ImageRes),
+                            contentDescription = "Gambar",
+                            modifier = Modifier
+                                .size(110.dp)
+                                .clip(RoundedCornerShape(10.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        IconButton(
+                            onClick = { isFavorite = !isFavorite },
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                        ){
+                            Icon(
+                                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = "Favorite Icon",
+                                tint = if (isFavorite) Color.Red else Color.White
+                            )
+                        }
+                    }
+                    Spacer(Modifier.width(20.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .height(110.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column() {
+                            Text(
+                                text = "${pakaian.nama}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(text = "${pakaian.harga}")
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Button(
+                                onClick = {},
+                                modifier = Modifier.size(40.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(15.dp))
+
+                            Button(
+                                onClick = {
+                                    caroutineScope.launch {
+                                        isLoading = true
+                                        delay(2000)
+                                        snackbarHostState.showSnackbar("Pesanan ${pakaian.nama} berhasil ditambahkan!")
+                                        isLoading = false
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = !isLoading,
+                                shape = RoundedCornerShape(8.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary
+                                ),
+                            ) {
+                                if (isLoading){
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        strokeWidth = 2.dp
+
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Menambahkan...",
+                                        color = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                } else {
+                                    Text(
+                                        text = "+ Tambah",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
+
+                            }
+                        }
+                    }
+                }
 
 
+            }
+
+            if (isFullScreen) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Kembali ke Katalog")
+                }
+            }
         }
     }
+
 }
 
 @Preview(showBackground = true)
@@ -541,8 +757,9 @@ fun DashboardPreview() {
 @Preview(showBackground = true)
 @Composable
 fun DaftarBajuPreview() {
+    val navController = rememberNavController()
     PrakTAM2_2417051059Theme {
-        DaftarBajuScreen()
+        DaftarBajuScreen(navController)
     }
 }
 
