@@ -1,12 +1,8 @@
 package com.example.praktam2_2417051059
 
-import Model.Pakaian
-import Model.Pemesanan
-import Model.SourcePakaian
-import Model.SourcePemesanan
-import android.R.attr.icon
-import android.R.attr.onClick
-import android.R.id.icon
+import com.example.praktam2_2417051059.Model.Pakaian
+import com.example.praktam2_2417051059.Model.Pemesanan
+import com.example.praktam2_2417051059.Model.SourcePemesanan
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,33 +20,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,15 +47,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,18 +60,17 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.ComposableTarget
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 
 
 import com.example.praktam2_2417051059.ui.theme.PrakTAM2_2417051059Theme
@@ -105,21 +88,23 @@ class MainActivity : ComponentActivity() {
     }
 }
 @Composable
-//@ComposableTarget
 fun AppNavigation (navController: NavHostController) {
+    var pakaianList by remember { mutableStateOf<List<Pakaian>>(emptyList()) }
+
     NavHost(
         navController = navController,
         startDestination = "home"
     ){
         composable("home"){
-            DaftarBajuScreen(navController)
+            DaftarBajuScreen(navController = navController) { fetchedPakaian ->
+                pakaianList = fetchedPakaian
+            }
         }
 
         composable("detail/{nama}") { backStackEntry ->
-            val nama =
-                backStackEntry.arguments?.getString("nama")
+            val nama = backStackEntry.arguments?.getString("nama")
 
-            val pakaian = SourcePakaian.jenisPakaian.find {
+            val pakaian = pakaianList.find {
                 it.nama == nama
             }
 
@@ -393,7 +378,22 @@ fun PesananBaju(pemesanan: Pemesanan) {
 }
 
 @Composable
-fun DaftarBajuScreen(navController: NavController) {
+fun DaftarBajuScreen(navController: NavController, onPakaianLoaded: (List<Pakaian>) -> Unit = {}) {
+    var pakaianList by remember { mutableStateOf<List<Pakaian>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var isError by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        try {
+            pakaianList = com.example.praktam2_2417051059.network.RetrofitClient.instance.getPakaian()
+            onPakaianLoaded(pakaianList)
+            isLoading = false
+        } catch (e: Exception) {
+            isLoading = false
+            isError = true
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -412,17 +412,53 @@ fun DaftarBajuScreen(navController: NavController) {
         Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
         Spacer(modifier = Modifier.height(25.dp))
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF1F1F1)),
-            contentPadding = PaddingValues(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            items(SourcePakaian.jenisPakaian) { pakaian ->
-                ItemBaju(pakaian = pakaian, navController = navController)
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFF81C784))
+            }
+        } else if(isError || pakaianList.isEmpty()){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Gagal Memuat Data",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Red
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Pastikan koneksi internet Anda menyala",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF1F1F1)),
+                contentPadding = PaddingValues(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                items(pakaianList) { pakaian ->
+                    ItemBaju(pakaian = pakaian, navController = navController)
+                }
             }
         }
+
     }
 }
 
@@ -500,12 +536,14 @@ fun ItemBaju(pakaian: Pakaian, navController: NavController) {
                 modifier = Modifier.padding(16.dp)
             ){
                 Box() {
-                    Image(
-                        painter = painterResource(id = pakaian.ImageRes),
-                        contentDescription = "Gambar",
+                    AsyncImage(
+                        model = pakaian.imageUrl,
+                        contentDescription = pakaian.nama,
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                        error = painterResource(id = R.drawable.ic_launcher_background),
                         modifier = Modifier
                             .size(110.dp)
-                            .clip(RoundedCornerShape(10.dp)),
+                            .clip(RoundedCornerShape(12.dp)),
                         contentScale = ContentScale.Crop
                     )
 
@@ -629,12 +667,14 @@ fun DetailScreen(pakaian: Pakaian, navController: NavController, isFullScreen: B
                     modifier = Modifier.padding(16.dp)
                 ){
                     Box() {
-                        Image(
-                            painter = painterResource(id = pakaian.ImageRes),
-                            contentDescription = "Gambar",
+                        AsyncImage(
+                            model = pakaian.imageUrl,
+                            contentDescription = pakaian.nama,
+                            placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                            error = painterResource(id = R.drawable.ic_launcher_background),
                             modifier = Modifier
                                 .size(110.dp)
-                                .clip(RoundedCornerShape(10.dp)),
+                                .clip(RoundedCornerShape(12.dp)),
                             contentScale = ContentScale.Crop
                         )
 
@@ -710,7 +750,6 @@ fun DetailScreen(pakaian: Pakaian, navController: NavController, isFullScreen: B
                                         modifier = Modifier.size(20.dp),
                                         color = MaterialTheme.colorScheme.onPrimary,
                                         strokeWidth = 2.dp
-
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(

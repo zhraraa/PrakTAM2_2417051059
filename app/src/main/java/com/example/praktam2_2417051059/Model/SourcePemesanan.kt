@@ -1,6 +1,4 @@
-package Model
-
-import com.example.praktam2_2417051059.R
+package com.example.praktam2_2417051059.Model
 
 object SourcePemesanan {
     val daftarPemesanan = listOf(
