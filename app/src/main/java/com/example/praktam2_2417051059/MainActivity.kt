@@ -1,14 +1,13 @@
 package com.example.praktam2_2417051059
 
-import com.example.praktam2_2417051059.Model.Pakaian
-import com.example.praktam2_2417051059.Model.Pemesanan
-import com.example.praktam2_2417051059.Model.SourcePemesanan
+import com.example.praktam2_2417051059.data.Model.Pakaian
+import com.example.praktam2_2417051059.data.Model.Pemesanan
+import com.example.praktam2_2417051059.data.Model.SourcePemesanan
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,7 +60,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,6 +69,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.praktam2_2417051059.data.network.RetrofitClient
+import com.example.praktam2_2417051059.data.repository.PakaianRepository
 
 
 import com.example.praktam2_2417051059.ui.theme.PrakTAM2_2417051059Theme
@@ -383,9 +383,11 @@ fun DaftarBajuScreen(navController: NavController, onPakaianLoaded: (List<Pakaia
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
 
+    val repository = remember { PakaianRepository() }
+
     LaunchedEffect(Unit) {
         try {
-            pakaianList = com.example.praktam2_2417051059.network.RetrofitClient.instance.getPakaian()
+            pakaianList = repository.getPakaian()
             onPakaianLoaded(pakaianList)
             isLoading = false
         } catch (e: Exception) {
@@ -400,17 +402,6 @@ fun DaftarBajuScreen(navController: NavController, onPakaianLoaded: (List<Pakaia
             .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 10.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            HeaderDaftarBaju()
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-        Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
-        Spacer(modifier = Modifier.height(25.dp))
 
         if (isLoading) {
             Box(
@@ -446,6 +437,18 @@ fun DaftarBajuScreen(navController: NavController, onPakaianLoaded: (List<Pakaia
                 }
             }
         } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            ) {
+                HeaderDaftarBaju()
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
+            Spacer(modifier = Modifier.height(25.dp))
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
