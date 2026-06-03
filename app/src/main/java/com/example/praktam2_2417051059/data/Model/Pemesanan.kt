@@ -1,7 +1,8 @@
-package com.example.praktam2_2417051059.data.Model
+package com.example.praktam2_2417051059.Model
 
 data class Pemesanan(
-    val nama: String,
+    val namaPelanggan: String,
+    val jenisPakaian: String,
     val tanggal: String,
-    val jenisPakaian: String
+    val deadline: String
 )

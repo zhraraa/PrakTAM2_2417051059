@@ -19,4 +19,4 @@ val BlackText = Color.Black
 
 //teks
 val GreyText = Color(0xFF494949)
-val BrownText = Color(0xFFB5875F)
+val BrownText = Color(0xFFB58B66)

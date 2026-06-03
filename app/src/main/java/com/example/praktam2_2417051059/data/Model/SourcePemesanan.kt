@@ -1,11 +1,24 @@
-package com.example.praktam2_2417051059.data.Model
+package com.example.praktam2_2417051059.Model
 
 object SourcePemesanan {
     val daftarPemesanan = listOf(
-        Pemesanan(nama = "Rara", tanggal = "12/07/2026", jenisPakaian = "Atasan Polos"),
-        Pemesanan(nama = "Abdul", tanggal = "12/05/2026", jenisPakaian = "Dress Polos"),
-        Pemesanan(nama = "Rara", tanggal = "12/07/2026", jenisPakaian = "Atasan Kebaya"),
-        Pemesanan(nama = "Rara", tanggal = "12/07/2026", jenisPakaian = "Kebaya Polos"),
-        Pemesanan(nama = "Rara", tanggal = "12/07/2026", jenisPakaian = "Atasan Polos")
+        Pemesanan(
+            namaPelanggan = "Rara",
+            jenisPakaian = "Dress Polos",
+            tanggal = "12/07/2026",
+            deadline = "2 hari lagi"
+        ),
+        Pemesanan(
+            namaPelanggan = "Abdul",
+            jenisPakaian = "Atasan Polos",
+            tanggal = "12/05/2026",
+            deadline = "1 hari lagi"
+        ),
+        Pemesanan(
+            namaPelanggan = "Sisca",
+            jenisPakaian = "Kebaya Brokat",
+            tanggal = "15/07/2026",
+            deadline = "5 hari lagi"
+        )
     )
 }
