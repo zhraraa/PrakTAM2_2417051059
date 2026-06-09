@@ -94,6 +94,10 @@ import component.pages.DaftarBajuScreen
 import component.pages.DaftarPelanggan
 import component.pages.DashboardScreen
 import component.pages.DetailBaju
+import component.pages.DetailPelanggan
+import component.pages.DetailPesanan
+import component.pages.FormTambahPelanggan
+import component.pages.PesananScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,11 +139,32 @@ fun AppNavigation(navController: NavHostController) {
                     }
                 }
 
+                composable("detailPelanggan/{nama}") { backStackEntry ->
+                    val nama = backStackEntry.arguments?.getString("nama")
+                    DetailPelanggan(navController, nama)
+                }
+
                 composable("katalog/{namaPelanggan}"){ backStackEntry ->
                     val namaPelanggan = backStackEntry.arguments?.getString("namaPelanggan")
                     DaftarBajuScreen(navController = navController, namaPelanggan = namaPelanggan) { fetchedPakaian ->
                         pakaianList = fetchedPakaian
                     }
+                }
+
+                composable("pesananScreen"){
+                    PesananScreen(navController = navController)
+                }
+
+                composable("detailPesanan/{pesananId}") { backStackEntry ->
+                    // buat nangkep ID pesanan yang dikirim dari halaman Daftar Pesanan
+                    val id = backStackEntry.arguments?.getString("pesananId")
+
+                    // kirim ID-nya ke halaman detail biar dia bisa nyari datanya
+                    DetailPesanan(navController = navController, pesananId = id)
+                }
+
+                composable("tambahPelanggan") {
+                    FormTambahPelanggan(navController = navController)
                 }
 
                 composable("detail/{namaPelanggan}/{namaBaju}") { backStackEntry ->
@@ -192,12 +217,12 @@ fun Navbar(navController: NavController) {
             },
 
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = MaterialTheme.colorScheme.primary,
-                selectedTextColor = MaterialTheme.colorScheme.primary,
+                selectedIconColor = Color(0XFFA98467),
+                selectedTextColor = Color(0XFFA98467),
                 indicatorColor = Color.Transparent,
 
-                unselectedTextColor = MaterialTheme.colorScheme.secondary,
-                unselectedIconColor = MaterialTheme.colorScheme.secondary
+                unselectedTextColor = Color(0XFF8E8280),
+                unselectedIconColor = Color(0XFF8E8280)
             )
         )
 
@@ -214,21 +239,21 @@ fun Navbar(navController: NavController) {
             },
 
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = MaterialTheme.colorScheme.primary,
-                selectedTextColor = MaterialTheme.colorScheme.primary,
+                selectedIconColor = Color(0XFFA98467),
+                selectedTextColor = Color(0XFFA98467),
                 indicatorColor = Color.Transparent,
 
-                unselectedTextColor = MaterialTheme.colorScheme.secondary,
-                unselectedIconColor = MaterialTheme.colorScheme.secondary
+                unselectedTextColor = Color(0XFF8E8280),
+                unselectedIconColor = Color(0XFF8E8280)
             )
         )
 
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Menu, contentDescription = "Pesanan", modifier = Modifier.size(30.dp)) },
             label = { Text(text = "Pesanan") },
-            selected = halamanSaatIni == "daftarPesanan",
+            selected = halamanSaatIni == "pesananScreen",
             onClick = {
-                navController.navigate("daftarPesanan") {
+                navController.navigate("pesananScreen") {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
@@ -236,12 +261,12 @@ fun Navbar(navController: NavController) {
             },
 
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                selectedIconColor = Color(0XFFA98467),
+                selectedTextColor = Color(0XFFA98467),
                 indicatorColor = Color.Transparent,
 
-                unselectedTextColor = MaterialTheme.colorScheme.secondary,
-                unselectedIconColor = MaterialTheme.colorScheme.secondary
+                unselectedTextColor = Color(0XFF8E8280),
+                unselectedIconColor = Color(0XFF8E8280)
             )
         )
 
@@ -258,12 +283,12 @@ fun Navbar(navController: NavController) {
             },
 
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = MaterialTheme.colorScheme.primary,
-                selectedTextColor = MaterialTheme.colorScheme.primary,
+                selectedIconColor = Color(0XFFA98467),
+                selectedTextColor = Color(0XFFA98467),
                 indicatorColor = Color.Transparent,
 
-                unselectedTextColor = MaterialTheme.colorScheme.secondary,
-                unselectedIconColor = MaterialTheme.colorScheme.secondary
+                unselectedTextColor = Color(0XFF8E8280),
+                unselectedIconColor = Color(0XFF8E8280)
             )
         )
     }

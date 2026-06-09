@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.praktam2_2417051059.Model.Pemesanan
+import com.example.praktam2_2417051059.Model.SourcePemesanan
 import com.example.praktam2_2417051059.R
 import com.example.praktam2_2417051059.data.Model.Pakaian
 import com.example.praktam2_2417051059.data.Model.SourcePelanggan
@@ -92,19 +94,17 @@ fun DetailBaju(pakaian: Pakaian, namaPelanggan: String?, navController: NavContr
                     placeholder = painterResource(id = R.drawable.ic_launcher_background),
                     error = painterResource(id = R.drawable.ic_launcher_background)
                 )
-
-                // favorit love
                 IconButton(
-                    onClick = { isFavorite = !isFavorite },
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
+                        .align(Alignment.TopStart)
                         .padding(12.dp)
                         .background(Color.White.copy(alpha = 0.7f), RoundedCornerShape(50))
                 ) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favorit",
-                        tint = if (isFavorite) Color.Red else Color.Gray
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Kembali",
+                        tint = Color.Black
                     )
                 }
             }
@@ -118,7 +118,7 @@ fun DetailBaju(pakaian: Pakaian, namaPelanggan: String?, navController: NavContr
                 Text(
                     text = "Rp ${pakaian.harga}",
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -129,20 +129,20 @@ fun DetailBaju(pakaian: Pakaian, namaPelanggan: String?, navController: NavContr
                 modifier = Modifier.padding(top = 10.dp)
             )
 
-            // KOTAK 1: NAMA PELANGGAN (Read-Only)
+            // NAMA PELANGGAN (Read-Only)
             OutlinedTextField(
                 value = namaPelanggan ?: "",
-                onValueChange = { /* Kosongin aja karena readOnly */ },
+                onValueChange = {  },
                 readOnly = true,
                 label = { Text("Nama Pelanggan") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
 
-            // KOTAK 2: DETAIL UKURAN (Read-Only & Otomatis)
+            // DETAIL UKURAN (Read-Only & Otomatis)
             OutlinedTextField(
                 value = detailUkuran,
-                onValueChange = { /* Kosongin aja karena readOnly */ },
+                onValueChange = {  },
                 readOnly = true,
                 label = { Text("Detail Ukuran") },
                 modifier = Modifier
@@ -150,7 +150,7 @@ fun DetailBaju(pakaian: Pakaian, namaPelanggan: String?, navController: NavContr
                     .height(110.dp)
             )
 
-            // KOTAK 3: CATATAN TAMBAHAN (Bisa Diketik)
+            // CATATAN TAMBAHAN (Bisa Diketik)
             OutlinedTextField(
                 value = catatanTambahan,
                 onValueChange = { catatanTambahan = it },
@@ -168,16 +168,34 @@ fun DetailBaju(pakaian: Pakaian, namaPelanggan: String?, navController: NavContr
                     coroutineScope.launch {
                         isLoading = true
                         delay(2000)
-                        isLoading = false
+                        val pesananBaru = Pemesanan(
+                            id = System.currentTimeMillis().toString(),
+                            namaPelanggan = namaPelanggan ?: "Umum",
+                            namaBaju = pakaian.nama,
+                            tanggalPesan = "2026-06-09",
+                            deadline = "2026-06-15",
+                            catatan = ""
+                        )
+
+                        // SIMPAN KE DATABASE DUMMY
+                        SourcePemesanan.listPemesanan.add(pesananBaru)
+
+                        // MUNCULIN NOTIF
                         snackbarHostState.showSnackbar(
                             "Pesanan ${pakaian.nama} untuk $namaPelanggan berhasil dicatat!"
                         )
+
+                        // PINDAH HALAMAN
+                        isLoading = false
+                        navController.navigate("dashboardScreen") {
+                            popUpTo("daftarBaju") { inclusive = true }
+                        }
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                enabled = !isLoading, // Cuma ngecek loading aja sekarang
+                enabled = !isLoading,
                 shape = RoundedCornerShape(12.dp)
             ) {
                 if (isLoading) {

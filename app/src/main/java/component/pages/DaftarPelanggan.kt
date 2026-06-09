@@ -25,14 +25,14 @@ import com.example.praktam2_2417051059.data.Model.SourcePelanggan
 
 @Composable
 fun DaftarPelanggan(navController: NavController) {
-    // buat nyimpen teks yang diketik di searchbar
     var searchQuery by remember { mutableStateOf("") }
 
-    // Scaffold berguna banget buat naruh Floating Button dan Bottom Bar otomatis!
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Nanti arahin ke form tambah pelanggan */ },
+                onClick = {
+                    navController.navigate("tambahPelanggan")
+                },
                 containerColor = Color(0xFFC09982),
                 contentColor = Color.White,
                 shape = CircleShape
@@ -40,27 +40,25 @@ fun DaftarPelanggan(navController: NavController) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Tambah")
             }
         }
-        // Catatan: Kodingan Bottom Bar kamu nanti tinggal ditaruh di sini
-        // bottomBar = { BottomNavigationBar(...) } 
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF9F9F9)) // Background abu-abu super soft
+                .background(Color(0xFFF9F9F9))
                 .padding(paddingValues)
                 .padding(20.dp)
         ) {
-            // 1. Judul Halaman
+            // judul halaman
             Text(
                 text = "Buku Pelanggan",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFB58A73) // Warna cokelat teks judul
+                color = MaterialTheme.colorScheme.onPrimary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 2. Search Bar (Kolom Pencarian)
+            // search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { teksBaru -> searchQuery = teksBaru }, // Update state tiap ngetik
@@ -80,16 +78,16 @@ fun DaftarPelanggan(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 3. Daftar Pelanggan (LazyColumn)
+            // daftar pelanggan
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // LOGIKA KEREN: Filter otomatis data pelanggan berdasarkan teks search bar!
+                // filter otomatis data pelanggan berdasarkan teks search bar
                 val pelangganYangDicari = SourcePelanggan.daftarPelanggan.filter {
                     it.nama.contains(searchQuery, ignoreCase = true)
                 }
 
-                // Render item yang udah difilter
+                // render item yang udah difilter
                 items(pelangganYangDicari) { pelanggan ->
                     ItemPelangganCard(pelanggan = pelanggan, navController = navController)
                 }
@@ -100,7 +98,7 @@ fun DaftarPelanggan(navController: NavController) {
 
 @Composable
 fun ItemPelangganCard(pelanggan: Pelanggan, navController: NavController) {
-    // Ambil 1 huruf pertama dari nama buat ditaruh di lingkaran inisial
+    // ambil 1 huruf pertama dari nama buat ditaruh di lingkaran inisial
     val inisial = pelanggan.nama.take(1).uppercase()
 
     Card(
@@ -108,7 +106,7 @@ fun ItemPelangganCard(pelanggan: Pelanggan, navController: NavController) {
             .fillMaxWidth()
             .clickable {
                 // Nanti tinggal buka comment ini kalau navigasinya udah siap
-                 navController.navigate("detail_ukuran/${pelanggan.nama}")
+                 navController.navigate("detailPelanggan/${pelanggan.nama}")
             },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -120,12 +118,11 @@ fun ItemPelangganCard(pelanggan: Pelanggan, navController: NavController) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Lingkaran Inisial Kiri
             Box(
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFEAE5D9)), // Warna cokelat krem pastel
+                    .background(Color(0xFFEAE5D9)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -138,7 +135,7 @@ fun ItemPelangganCard(pelanggan: Pelanggan, navController: NavController) {
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Nama & Nomor HP di Tengah
+            // nama & no HP di tengah
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = pelanggan.nama,
@@ -153,7 +150,7 @@ fun ItemPelangganCard(pelanggan: Pelanggan, navController: NavController) {
                 )
             }
 
-            // Ikon Panah di Kanan
+            // icon panah di kanan
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Detail",

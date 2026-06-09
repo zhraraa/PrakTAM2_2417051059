@@ -11,7 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 //Background
-val GreyBackground = Color(0xFFF1F1F1)
+val GreyBackground = Color(0xFFF9F7F2)
 val SageBackground = Color(0xFFE9EDCA)
 val BrownBackground = Color(0xFFEDE1D5)
 val WhiteBackground = Color.White

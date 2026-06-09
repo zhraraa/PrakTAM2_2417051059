@@ -262,7 +262,7 @@ fun ItemBaju(pakaian: Pakaian, navController: NavController, namaPelanggan: Stri
                         Text(
                             text = "Rp ${pakaian.harga}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                     Row(
