@@ -180,7 +180,7 @@ fun DashboardScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(pesananTerurut) { pemesanan ->
-                        DeadlineBaju()
+                        DeadlineBaju(pemesanan = pemesanan,navController = navController)
                     }
                 }
             }
@@ -260,7 +260,7 @@ fun DashboardScreen(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ){
                     SourcePelanggan.daftarPelanggan.take(5).forEach { pelanggan ->
-                        Pelanggan(pelanggan = pelanggan)
+                        Pelanggan(pelanggan = pelanggan, navController = navController)
                     }
                 }
                 Spacer(modifier = Modifier.height(50.dp))
@@ -271,7 +271,7 @@ fun DashboardScreen(navController: NavController) {
 }
 
 @Composable
-fun DeadlineBaju(){
+fun DeadlineBaju(pemesanan: Pemesanan, navController: NavController){
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         modifier = Modifier
@@ -281,6 +281,9 @@ fun DeadlineBaju(){
                 ambientColor = Color.Black.copy(alpha = 0.5f),
                 spotColor = Color.Black.copy(alpha = 0.5f)
             )
+            .clickable{
+                navController.navigate("detailPesanan/${pemesanan.id}")
+            }
 
     ) {
         Column(
@@ -291,7 +294,7 @@ fun DeadlineBaju(){
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
-                text = "2 hari lagi",
+                text = pemesanan.deadline,
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
@@ -302,12 +305,12 @@ fun DeadlineBaju(){
 
             )
             Text(
-                text = SourcePemesanan.listPemesanan[0].namaBaju,
+                text = pemesanan.namaBaju,
                 style = MaterialTheme.typography.bodyMedium
             )
 
             Text(
-                text = SourcePemesanan.listPemesanan[0].namaPelanggan
+                text = pemesanan.namaPelanggan
             )
         }
 
@@ -319,7 +322,7 @@ fun PesananBaju(pemesanan: Pemesanan, navController: NavController) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
         modifier = Modifier
             .clickable {
-                navController.navigate("detailBaju/${pemesanan.namaPelanggan}")
+                navController.navigate("detailPesanan/${pemesanan.id}")
             }
         ) {
         Column(
@@ -360,7 +363,7 @@ fun PesananBaju(pemesanan: Pemesanan, navController: NavController) {
 }
 
 @Composable
-fun Pelanggan (pelanggan: Pelanggan){
+fun Pelanggan (pelanggan: Pelanggan, navController: NavController){
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
         modifier = Modifier
@@ -370,6 +373,9 @@ fun Pelanggan (pelanggan: Pelanggan){
                 ambientColor = Color.Black.copy(alpha = 0.5f),
                 spotColor = Color.Black.copy(alpha = 0.5f)
             )
+            .clickable{
+                navController.navigate("detailPelanggan/${pelanggan.nama}")
+            }
     ) {
         Column(
             modifier = Modifier
@@ -379,12 +385,12 @@ fun Pelanggan (pelanggan: Pelanggan){
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
-                text = SourcePelanggan.daftarPelanggan[0].nama,
+                text = pelanggan.nama,
                 style = MaterialTheme.typography.bodyMedium
             )
 
             Text(
-                text = SourcePelanggan.daftarPelanggan[0].noHp
+                text = pelanggan.noHp
             )
         }
 

@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -60,6 +61,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DaftarBajuScreen(navController: NavController, namaPelanggan: String? = null, onPakaianLoaded: (List<Pakaian>) -> Unit = {}) {
+    val snackbarHostState = remember { SnackbarHostState() }
     var pakaianList by remember { mutableStateOf<List<Pakaian>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
@@ -144,7 +146,8 @@ fun DaftarBajuScreen(navController: NavController, namaPelanggan: String? = null
                     ItemBaju(
                         pakaian = pakaian,
                         navController = navController,
-                        namaPelanggan = namaPelanggan
+                        namaPelanggan = namaPelanggan,
+                        snackbarHostState = snackbarHostState
                     )
                 }
             }
@@ -205,17 +208,17 @@ fun HeaderDaftarBaju(){
 }
 
 @Composable
-fun ItemBaju(pakaian: Pakaian, navController: NavController, namaPelanggan: String?) {
+fun ItemBaju(pakaian: Pakaian, navController: NavController, namaPelanggan: String?, snackbarHostState: SnackbarHostState) {
     var isFavorite by remember { mutableStateOf(false) }
-
-    // HAPUS CoroutineScope, isLoading, dan SnackbarHostState karena tugas nyimpen dipindah ke Form Final
+//  buat loading sm coroutine
+    var isDeleting by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     Box() {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    // Navigasi saat card diklik (sementara ke detail baju, nanti kita ubah jalurnya ke Form)
                     navController.navigate("detail/${pakaian.nama}")
                 },
             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -271,20 +274,39 @@ fun ItemBaju(pakaian: Pakaian, navController: NavController, namaPelanggan: Stri
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Button(
-                            onClick = {},
+                            onClick = {
+                                coroutineScope.launch {
+                                    isDeleting = true
+                                    delay(2000)
+                                    isDeleting = false
+
+                                    snackbarHostState.showSnackbar("${pakaian.nama} berhasil dihapus dari katalog")
+                                }
+                            },
                             modifier = Modifier.size(40.dp),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(0.dp),
+                            enabled = !isDeleting,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
+                                containerColor = Color.Red,
+                                disabledContainerColor = Color(0xFFFFAAAA)
                             )
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(20.dp)
-                            )
+                            if (isDeleting) {
+                                // Animasi Muter
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    color = Color.White,
+                                    strokeWidth = 2.dp
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "delete",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.width(15.dp))
