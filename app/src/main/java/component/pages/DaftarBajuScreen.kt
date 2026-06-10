@@ -79,80 +79,83 @@ fun DaftarBajuScreen(navController: NavController, namaPelanggan: String? = null
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(vertical = 10.dp)
     ) {
-
-        if (isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = Color(0xFF81C784))
-            }
-        } else if(isError || pakaianList.isEmpty()){
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+        Column{
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Gagal Memuat Data",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Red
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Pastikan koneksi internet Anda menyala",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    CircularProgressIndicator(color = Color(0xFF81C784))
                 }
-            }
-        } else {
-            Box(
-                modifier = Modifier
+            } else if(isError || pakaianList.isEmpty()){
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Gagal Memuat Data",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Red
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Pastikan koneksi internet Anda menyala",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                ) {
+                    HeaderDaftarBaju()
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-            ) {
-                HeaderDaftarBaju()
-            }
+                    .height(1.dp)
+                    .background(Color.LightGray))
 
-            Spacer(modifier = Modifier.height(10.dp))
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.LightGray))
-            Spacer(modifier = Modifier.height(25.dp))
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFF1F1F1)),
-                contentPadding = PaddingValues(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                items(pakaianList) { pakaian ->
-                    ItemBaju(
-                        pakaian = pakaian,
-                        navController = navController,
-                        namaPelanggan = namaPelanggan,
-                        snackbarHostState = snackbarHostState
-                    )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0xFFF1F1F1)),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    items(pakaianList) { pakaian ->
+                        ItemBaju(
+                            pakaian = pakaian,
+                            navController = navController,
+                            namaPelanggan = namaPelanggan,
+                            snackbarHostState = snackbarHostState
+                        )
+                    }
                 }
             }
         }
 
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
@@ -210,7 +213,6 @@ fun HeaderDaftarBaju(){
 @Composable
 fun ItemBaju(pakaian: Pakaian, navController: NavController, namaPelanggan: String?, snackbarHostState: SnackbarHostState) {
     var isFavorite by remember { mutableStateOf(false) }
-//  buat loading sm coroutine
     var isDeleting by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 

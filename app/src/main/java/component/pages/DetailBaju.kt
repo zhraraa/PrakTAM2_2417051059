@@ -174,7 +174,8 @@ fun DetailBaju(pakaian: Pakaian, namaPelanggan: String?, navController: NavContr
                             namaBaju = pakaian.nama,
                             tanggalPesan = "2026-06-09",
                             deadline = "2026-06-15",
-                            catatan = ""
+                            catatan = "",
+                            status = "Aktif"
                         )
 
                         // SIMPAN KE DATABASE DUMMY

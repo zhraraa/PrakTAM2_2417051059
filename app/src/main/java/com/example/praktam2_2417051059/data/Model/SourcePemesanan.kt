@@ -10,7 +10,8 @@ object SourcePemesanan {
             namaBaju = "Rok Polos",
             tanggalPesan = "2026-06-08",
             deadline = "2026-06-11",
-            catatan = "Minta karet pinggang agak dilonggarin dikit biar nggak sesak."
+            catatan = "Minta karet pinggang agak dilonggarin dikit biar nggak sesak.",
+            status = "Aktif"
         ),
         Pemesanan(
             id = "2",
@@ -18,7 +19,8 @@ object SourcePemesanan {
             namaBaju = "Atasan Polos",
             tanggalPesan = "2026-06-05",
             deadline = "2026-06-15",
-            catatan = "Bagian lengan tolong dibikin agak ngembang (puff) sedikit."
+            catatan = "Bagian lengan tolong dibikin agak ngembang (puff) sedikit.",
+            status = "Aktif"
         ),
         Pemesanan(
             id = "3",
@@ -26,7 +28,17 @@ object SourcePemesanan {
             namaBaju = "Dress Brokat",
             tanggalPesan = "2026-06-01",
             deadline = "2026-06-25",
-            catatan = "Payetnya dibanyakin di bagian dada sama ujung lengan aja."
+            catatan = "Payetnya dibanyakin di bagian dada sama ujung lengan aja.",
+            status = "Aktif"
+        ),
+        Pemesanan(
+            id = "4",
+            namaPelanggan = "Pak Budi",
+            namaBaju = "Kaos Polos",
+            tanggalPesan = "2026-06-30",
+            deadline = "2026-07-30",
+            catatan = "Lengan ditipisin, dibuat estetik",
+            status = "Selesai"
         )
     )
 }

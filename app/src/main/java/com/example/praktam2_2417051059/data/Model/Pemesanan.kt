@@ -6,5 +6,6 @@ data class Pemesanan(
     val namaBaju: String,
     val tanggalPesan: String,
     val deadline: String,
-    val catatan: String
+    val catatan: String,
+    var status: String
 )

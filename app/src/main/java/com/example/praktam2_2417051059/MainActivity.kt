@@ -97,6 +97,7 @@ import component.pages.DetailBaju
 import component.pages.DetailPelanggan
 import component.pages.DetailPesanan
 import component.pages.FormTambahPelanggan
+import component.pages.LoginScreen
 import component.pages.PesananScreen
 
 class MainActivity : ComponentActivity() {
@@ -123,8 +124,12 @@ fun AppNavigation(navController: NavHostController) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = "dashboardScreen"
+                startDestination = "login"
             ){
+                composable("login"){
+                    LoginScreen(navController = navController)
+                }
+
                 composable("dashboardScreen"){
                     DashboardScreen(navController = navController)
                 }
@@ -186,7 +191,7 @@ fun AppNavigation(navController: NavHostController) {
         val halamanSaatIni = navBackStackEntry?.destination?.route
 
         // sembunyiin Navbar kalau rutenya berawalan "detail"
-        if (halamanSaatIni?.startsWith("detail") != true) {
+        if (halamanSaatIni?.startsWith("detail") != true && halamanSaatIni != "login") {
             Navbar(navController)
         }
     }
